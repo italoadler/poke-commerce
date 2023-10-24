@@ -1,6 +1,8 @@
 const pokemonList = document.getElementById("pokemonList");
+const cart = document.getElementById("cart");
+const cartItems = [];
 
-// Função para buscar e listar Pokémon com mais detalhes
+// Função para buscar e listar Pokémon com detalhes
 async function listPokemonWithDetails() {
     try {
         const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50");
@@ -14,7 +16,9 @@ async function listPokemonWithDetails() {
                 const response = await fetch(pokemonUrl.url);
                 if (response.ok) {
                     const pokemonData = await response.json();
-                    const listItem = createPokemonListItem(pokemonData);
+                    // Gere um preço aleatório entre $1 e $100
+                    const price = Math.floor(Math.random() * 100) + 1;
+                    const listItem = createPokemonListItem(pokemonData, price);
                     pokemonList.appendChild(listItem);
                 }
             }
@@ -26,7 +30,7 @@ async function listPokemonWithDetails() {
     }
 }
 
-function createPokemonListItem(pokemonData) {
+function createPokemonListItem(pokemonData, price) {
     const listItem = document.createElement("li");
 
     // Nome do Pokémon
@@ -47,12 +51,45 @@ function createPokemonListItem(pokemonData) {
     imageElement.src = pokemonData.sprites.front_default;
     imageElement.alt = pokemonData.name;
 
+    // Preço do Pokémon
+    const priceElement = document.createElement("p");
+    priceElement.innerText = `Preço: $${price}`;
+
+    // Botão "Adicionar ao Carrinho"
+    const addButton = document.createElement("button");
+    addButton.innerText = "Adicionar ao Carrinho";
+    addButton.addEventListener("click", () => {
+        addToCart(pokemonData.name, price);
+    });
+
     listItem.appendChild(nameElement);
     listItem.appendChild(idElement);
     listItem.appendChild(typesElement);
     listItem.appendChild(imageElement);
+    listItem.appendChild(priceElement);
+    listItem.appendChild(addButton);
 
     return listItem;
+}
+
+function addToCart(pokemonName, price) {
+    cartItems.push({ name: pokemonName, price });
+    updateCart();
+}
+
+function updateCart() {
+    cart.innerHTML = "Carrinho de Compras:";
+    if (cartItems.length === 0) {
+        cart.innerHTML += " O carrinho está vazio.";
+    } else {
+        const cartList = document.createElement("ul");
+        for (const item of cartItems) {
+            const cartItem = document.createElement("li");
+            cartItem.innerText = `${item.name} - $${item.price}`;
+            cartList.appendChild(cartItem);
+        }
+        cart.appendChild(cartList);
+    }
 }
 
 listPokemonWithDetails();
