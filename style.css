@@ -59,3 +59,53 @@ ul#pokemonList li p:last-child {
   font-size: 0.8em;
   color: #666;
 }
+/* Estilos para o carrinho de compras */
+#cart {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 20px auto;
+  max-width: 300px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+#cart h2 {
+  font-size: 1.2em;
+  margin: 0;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+/* Estilos para os itens no carrinho */
+#cart ul {
+  list-style: none;
+  padding: 0;
+}
+
+#cart li {
+  display: flex;
+  justify-content: space-between;
+  padding: 5px 0;
+}
+
+#cart li span {
+  flex-grow: 1;
+  margin-right: 10px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+#cart button {
+  background-color: #ffcc00;
+  border: none;
+  border-radius: 5px;
+  color: #333;
+  cursor: pointer;
+  padding: 5px 10px;
+}
+
+#cart button:hover {
+  background-color: #ff9900;
+}
