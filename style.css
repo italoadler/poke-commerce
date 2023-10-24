@@ -12,7 +12,24 @@ h1 {
   padding: 20px;
   background-color: #ffcc00;
 }
+/* Estilos para o contêiner que envolve a galeria e o carrinho */
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
 
+/* Estilos para a galeria de Pokémon */
+#pokemonList {
+  /* Estilos da galeria de Pokémon */
+  width: 70%; /* Largura da galeria */
+}
+
+/* Estilos para o carrinho de compras */
+#cart {
+  /* Estilos do carrinho de compras */
+  width: 28%; /* Largura do carrinho */
+}
 /* Estilo para a lista de Pokémon */
 ul#pokemonList {
   list-style: none;

@@ -1,6 +1,9 @@
+
+
 const pokemonList = document.getElementById("pokemonList");
 const cart = document.getElementById("cart");
 const cartItems = [];
+
 
 // Função para buscar e listar Pokémon com detalhes
 async function listPokemonWithDetails() {
@@ -53,7 +56,7 @@ function createPokemonListItem(pokemonData, price) {
 
     // Preço do Pokémon
     const priceElement = document.createElement("p");
-    priceElement.innerText = `Preço: $${price}`;
+    priceElement.innerText = `Preço: R$${price}`;
 
     // Botão "Adicionar ao Carrinho"
     const addButton = document.createElement("button");
@@ -93,3 +96,5 @@ function updateCart() {
 }
 
 listPokemonWithDetails();
+
+
