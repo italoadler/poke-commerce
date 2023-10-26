@@ -8,9 +8,10 @@ async function listPokemonWithDetails() {
     const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50");
     if (response.ok) {
       const data = await response.json();
+      console.log(data)
       const pokemonUrls = data.results;
 
-      pokemonList.innerHTML = "";
+     pokemonList.innerHTML = "";
 
       for (const pokemonUrl of pokemonUrls) {
         const response = await fetch(pokemonUrl.url);
@@ -86,6 +87,7 @@ function addToCart(pokemonName, price) {
   updateCart();
 }
 
+// Função para atualizar o carrinho
 function updateCart() {
   cart.innerHTML = "Carrinho de Compras:";
   if (cartItems.length === 0) {
@@ -96,12 +98,26 @@ function updateCart() {
 
     for (const item of cartItems) {
       const cartItem = document.createElement("li");
+
+      // Adicione um botão de remoção
+      const removeButton = document.createElement("button");
+      removeButton.innerText = "Remover";
+      removeButton.classList.add("remove-button"); // Adicione a classe "remove-button"
+      removeButton.addEventListener("click", () => {
+        removeFromCart(item.name);
+      });
+
+      // Crie um elemento de parágrafo para exibir as informações do item
+      const itemInfo = document.createElement("p");
       const name = item.name;
       const price = item.price;
       const quantity = item.quantity;
       const itemTotal = price * quantity;
+      itemInfo.innerText = `${name} - R$${price} x ${quantity} = R$${itemTotal}`;
 
-      cartItem.innerText = `${name} - R$${price} x ${quantity} = R$${itemTotal}`;
+      // Adicione o botão de remoção e informações do item ao item do carrinho
+      cartItem.appendChild(removeButton);
+      cartItem.appendChild(itemInfo);
 
       cartList.appendChild(cartItem);
       total += itemTotal; // Adiciona ao total
@@ -109,7 +125,7 @@ function updateCart() {
 
     cart.appendChild(cartList);
 
-    // Adiciona o valor total ao carrinho
+    // Adicione o valor total ao carrinho
     const totalElement = document.createElement("p");
     totalElement.innerText = `Total: R$${total}`;
     cart.appendChild(totalElement);

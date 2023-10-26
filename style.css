@@ -126,3 +126,7 @@ ul#pokemonList li p:last-child {
 #cart button:hover {
   background-color: #ff9900;
 }
+#cart ul li button.remove-button {
+  background-color: #ff0000; /* Cor do botão de remoção (use a cor desejada) */
+  color: #fff; /* Cor do texto no botão */
+}
