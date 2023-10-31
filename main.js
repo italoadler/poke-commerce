@@ -140,7 +140,6 @@ function updateCart() {
     const checkoutButton = document.createElement("button");
     checkoutButton.innerText = "Finalizar Compra";
     checkoutButton.addEventListener("click", () => {
-      alert("Obrigado pela compra!");
       finalizePurchase();
       clearCart();
     });
