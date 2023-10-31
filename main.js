@@ -5,7 +5,7 @@ const cartItems = [];
 // Função para buscar e listar Pokémon com detalhes
 async function listPokemonWithDetails() {
   try {
-    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50");
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=10");
     if (response.ok) {
       const data = await response.json();
       console.log(data)
@@ -135,6 +135,17 @@ function updateCart() {
     clearButton.innerText = "Limpar Carrinho";
     clearButton.addEventListener("click", clearCart);
     cart.appendChild(clearButton);
+
+    // Botão para finalizar compra
+    const checkoutButton = document.createElement("button");
+    checkoutButton.innerText = "Finalizar Compra";
+    checkoutButton.addEventListener("click", () => {
+      alert("Obrigado pela compra!");
+      finalizePurchase();
+      clearCart();
+    });
+    cart.appendChild(checkoutButton);
+
   }
 }
 
@@ -159,4 +170,29 @@ function removeFromCart(pokemonName) {
 function clearCart() {
   cartItems.length = 0; // Limpa o carrinho
   updateCart();
+}
+
+function finalizePurchase() {
+  fetch("http://localhost:3001/checkout", {
+    method: "POST",
+    body: JSON.stringify(cartItems),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erro na resposta do servidor (Status ${response.status})`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        console.error("Erro de rede: Verifique sua conexão com a internet ou a disponibilidade do servidor.");
+      } else if (error.message.includes("CORS")) {
+        console.error("Erro de CORS: O servidor não permite solicitações do domínio do front-end.");
+      } else {
+        console.error("Erro desconhecido: ", error);
+      }
+    });
 }
