@@ -185,6 +185,13 @@ function finalizePurchase() {
         throw new Error(`Erro na resposta do servidor (Status ${response.status})`);
       }
       return response.json();
+    }).then((data) => {
+      if(data.receipt) {
+        showReceiptPopup(data.receipt);
+      } else {
+        console.error("Erro ao finalizar compra, a resposta do servidor não contém um recibo válido ", data.error);
+      }
+
     })
     .catch(error => {
       if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
@@ -196,3 +203,42 @@ function finalizePurchase() {
       }
     });
 }
+
+
+
+// Função para fechar o pop-up
+function closePopup() {
+  const popup = document.getElementById("receiptPopup");
+  popup.style.display = "none";
+}
+
+
+function showReceiptPopup(receipt) {
+  const receiptDetails = document.getElementById("receiptDetails");
+  const receiptDate = document.getElementById("receiptDate");
+
+  // Limpe os detalhes do recibo
+  receiptDetails.innerHTML = "";
+
+  // Preencha a data do recibo
+  receiptDate.textContent = new Date(receipt.date).toLocaleString();
+
+  // Preencha os detalhes do recibo
+  const receiptItems = receipt.items.map(item => {
+    return `<div class="item">
+      <p>${item.name} x ${item.quantity}</p>
+      <p>R$${item.price * item.quantity}</p>
+    </div>`;
+  });
+
+  const total = `<p class="total">Total: R$${receipt.total}</p>`;
+
+  receiptDetails.innerHTML = receiptItems.join("") + total;
+
+  // Exiba o pop-up
+  const popup = document.getElementById("receiptPopup");
+  popup.style.display = "block";
+  popup.addEventListener("click", closePopup);
+}
+
+

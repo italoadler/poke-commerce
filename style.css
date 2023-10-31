@@ -131,3 +131,65 @@ ul#pokemonList li p:last-child {
   background-color: #ff0000; /* Cor do botão de remoção (use a cor desejada) */
   color: #fff; /* Cor do texto no botão */
 }
+/* Estilos para o pop-up de recibo */
+/* Estilos para o pop-up de recibo */
+.popup {
+  display: none;
+  position: fixed; /* Tornar o pop-up fixo na tela */
+  top: 50%; /* Centralizar verticalmente */
+  left: 50%; /* Centralizar horizontalmente */
+  transform: translate(-50%, -50%); /* Centralizar efetivamente */
+  background-color: #fffbcc;
+  border: 2px solid #000;
+  box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.2);
+}
+
+/* Estilos para o botão de fechar */
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5em;
+  cursor: pointer;
+}
+
+
+.popup-content {
+  padding: 20px;
+}
+
+/* Estilos para a data do recibo */
+#receiptDate {
+  font-size: 1.2em;
+  margin: 10px 0;
+}
+
+/* Estilos para os detalhes do recibo */
+#receiptDetails {
+  font-family: Arial, sans-serif;
+  margin-top: 20px;
+}
+
+#receiptDetails p {
+  margin: 0;
+  padding: 5px 0;
+  text-align: left;
+}
+
+#receiptDetails .item {
+  display: flex;
+  justify-content: space-between;
+  border-bottom: 1px solid #000; /* Linhas divisórias entre itens */
+  padding: 5px 0;
+}
+
+#receiptDetails .item p {
+  flex: 1;
+}
+
+#receiptDetails .total {
+  font-weight: bold;
+  border-top: 1px solid #000; /* Linha divisória no topo */
+  margin-top: 10px;
+  padding-top: 5px;
+}

@@ -1,30 +1,26 @@
-// Obtém elementos do DOM pelo ID
 const pokemonList = document.getElementById("pokemonList");
 const cart = document.getElementById("cart");
-const cartItems = []; // Array para armazenar itens no carrinho
+const cartItems = [];
 
 // Função para buscar e listar Pokémon com detalhes
 async function listPokemonWithDetails() {
   try {
-    // Faz uma solicitação assíncrona para a API do Pokémon
-    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=50");
+    const response = await fetch("https://pokeapi.co/api/v2/pokemon?limit=10");
     if (response.ok) {
-      // Se a resposta for bem-sucedida, converte-a para JSON
       const data = await response.json();
-      const pokemonUrls = data.results; // Obtém URLs de Pokémon
+      console.log(data)
+      const pokemonUrls = data.results;
 
-      pokemonList.innerHTML = ""; // Limpa a lista de Pokémon no HTML
+     pokemonList.innerHTML = "";
 
-      // Itera pelas URLs dos Pokémon
       for (const pokemonUrl of pokemonUrls) {
-        const response = await fetch(pokemonUrl.url); // Faz uma solicitação para obter detalhes do Pokémon
+        const response = await fetch(pokemonUrl.url);
         if (response.ok) {
           const pokemonData = await response.json();
-          console.log(pokemonData)
-          // Gera um preço aleatório entre $1 e $100
+          // Gere um preço aleatório entre $1 e $100
           const price = Math.floor(Math.random() * 100) + 1;
-          const listItem = createPokemonListItem(pokemonData, price); // Cria um item de lista com detalhes do Pokémon
-          pokemonList.appendChild(listItem); // Adiciona o item à lista de Pokémon
+          const listItem = createPokemonListItem(pokemonData, price);
+          pokemonList.appendChild(listItem);
         }
       }
     } else {
@@ -35,7 +31,6 @@ async function listPokemonWithDetails() {
   }
 }
 
-// Função para criar um item de lista com detalhes do Pokémon
 function createPokemonListItem(pokemonData, price) {
   const listItem = document.createElement("li");
 
@@ -68,7 +63,6 @@ function createPokemonListItem(pokemonData, price) {
     addToCart(pokemonData.name, price);
   });
 
-  // Adiciona elementos ao item de lista
   listItem.appendChild(nameElement);
   listItem.appendChild(idElement);
   listItem.appendChild(typesElement);
@@ -90,7 +84,7 @@ function addToCart(pokemonName, price) {
     // Adiciona o Pokémon com quantidade 1 se não existir
     cartItems.push({ name: pokemonName, price, quantity: 1 });
   }
-  updateCart(); // Atualiza o carrinho
+  updateCart();
 }
 
 // Função para atualizar o carrinho
@@ -108,6 +102,7 @@ function updateCart() {
       // Adicione um botão de remoção
       const removeButton = document.createElement("button");
       removeButton.innerText = "Remover";
+      removeButton.classList.add("remove-button"); // Adicione a classe "remove-button"
       removeButton.addEventListener("click", () => {
         removeFromCart(item.name);
       });
@@ -140,14 +135,22 @@ function updateCart() {
     clearButton.innerText = "Limpar Carrinho";
     clearButton.addEventListener("click", clearCart);
     cart.appendChild(clearButton);
+
+    // Botão para finalizar compra
+    const checkoutButton = document.createElement("button");
+    checkoutButton.innerText = "Finalizar Compra";
+    checkoutButton.addEventListener("click", () => {
+      alert("Obrigado pela compra!");
+      finalizePurchase();
+      clearCart();
+    });
+    cart.appendChild(checkoutButton);
+
   }
 }
 
+listPokemonWithDetails();
 
-
-listPokemonWithDetails(); // Chama a função para listar Pokémon quando a página carrega
-
-// Função para remover um Pokémon do carrinho
 function removeFromCart(pokemonName) {
   const existingItem = cartItems.find(item => item.name === pokemonName);
   if (existingItem) {
@@ -160,12 +163,65 @@ function removeFromCart(pokemonName) {
         cartItems.splice(index, 1);
       }
     }
-    updateCart(); // Atualiza o carrinho
+    updateCart();
   }
 }
 
-// Função para limpar o carrinho
 function clearCart() {
   cartItems.length = 0; // Limpa o carrinho
-  updateCart(); // Atualiza o carrinho
+  updateCart();
+}
+
+function finalizePurchase() {
+  fetch("http://localhost:3001/checkout", {
+    method: "POST",
+    body: JSON.stringify(cartItems),
+    headers: {
+      "Content-Type": "application/json"
+    }
+  })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error(`Erro na resposta do servidor (Status ${response.status})`);
+      }
+      return response.json();
+    })
+    .catch(error => {
+      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+        console.error("Erro de rede: Verifique sua conexão com a internet ou a disponibilidade do servidor.");
+      } else if (error.message.includes("CORS")) {
+        console.error("Erro de CORS: O servidor não permite solicitações do domínio do front-end.");
+      } else {
+        console.error("Erro desconhecido: ", error);
+      }
+    });
+
+}
+
+
+// Função para mostrar o pop-up de recibo
+function showReceiptPopup(receipt) {
+  const receiptDetails = document.getElementById("receiptDetails");
+
+  // Limpe os detalhes do recibo
+  receiptDetails.innerHTML = "";
+
+  // Preencha os detalhes do recibo
+  const receiptItems = receipt.items.map(item => {
+    return `<p>${item.name} - R$${item.price} x ${item.quantity} = R$${item.price * item.quantity}</p>`;
+  });
+
+  const total = `<p>Total: R$${receipt.total}</p>`;
+
+  receiptDetails.innerHTML = receiptItems.join("") + total;
+
+  // Exiba o pop-up
+  const popup = document.getElementById("receiptPopup");
+  popup.style.display = "block";
+}
+
+// Função para fechar o pop-up
+function closePopup() {
+  const popup = document.getElementById("receiptPopup");
+  popup.style.display = "none";
 }
