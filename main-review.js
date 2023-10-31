@@ -172,30 +172,56 @@ function clearCart() {
   updateCart();
 }
 
-function finalizePurchase() {
-  fetch("http://localhost:3001/checkout", {
-    method: "POST",
-    body: JSON.stringify(cartItems),
-    headers: {
-      "Content-Type": "application/json"
-    }
-  })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error(`Erro na resposta do servidor (Status ${response.status})`);
-      }
-      return response.json();
-    })
-    .catch(error => {
-      if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
-        console.error("Erro de rede: Verifique sua conexão com a internet ou a disponibilidade do servidor.");
-      } else if (error.message.includes("CORS")) {
-        console.error("Erro de CORS: O servidor não permite solicitações do domínio do front-end.");
-      } else {
-        console.error("Erro desconhecido: ", error);
+// function finalizePurchase() {
+//   fetch("http://localhost:3001/checkout", {
+//     method: "POST",
+//     body: JSON.stringify(cartItems),
+//     headers: {
+//       "Content-Type": "application/json"
+//     }
+//   })
+//     .then(response => {
+//       if (!response.ok) {
+//         throw new Error(`Erro na resposta do servidor (Status ${response.status})`);
+//       }
+//       return response.json();
+//     })
+//     .catch(error => {
+//       if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+//         console.error("Erro de rede: Verifique sua conexão com a internet ou a disponibilidade do servidor.");
+//       } else if (error.message.includes("CORS")) {
+//         console.error("Erro de CORS: O servidor não permite solicitações do domínio do front-end.");
+//       } else {
+//         console.error("Erro desconhecido: ", error);
+//       }
+//     });
+
+// }
+async function finalizePurchase() {
+  try {
+    const response = await fetch("http://localhost:3001/checkout", {
+      method: "POST",
+      body: JSON.stringify(cartItems),
+      headers: {
+        "Content-Type": "application/json"
       }
     });
 
+    if (!response.ok) {
+      throw new Error(`Erro na resposta do servidor (Status ${response.status})`);
+    }
+
+    const data = await response.json();
+    // Faça algo com os dados (caso necessário)
+  } catch (error) {
+    if (error instanceof TypeError && error.message.includes("Failed to fetch")) {
+      console.error("Erro de rede: Verifique sua conexão com a internet ou a disponibilidade do servidor.");
+    } else if (error.message.includes("CORS")) {
+      console.error("Erro de CORS: O servidor não permite solicitações do domínio do front-end.");
+    } else {
+      console.error("Erro desconhecido: ", error);
+    }
+  }
 }
 
 
